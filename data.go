@@ -56,7 +56,7 @@ func getCaseStudy(caseStudyId int) (CaseStudy, error) {
 	return caseStudy, err
 }
 
-func getAllCaseStudies() []CaseStudy {
+func getAllCaseStudies() ([]CaseStudy, error) {
 
 	opts := options.Client().ApplyURI(goDotEnv("DB_URI"))
 
@@ -82,7 +82,7 @@ func getAllCaseStudies() []CaseStudy {
 	cursor, err := collection.Find(context.Background(), query, options)
 	if err != nil {
 		fmt.Printf("getAllCaseStudies(): %s\n", err)
-		return nil
+		return nil, err
 	}
 	defer cursor.Close(context.Background())
 
@@ -91,16 +91,16 @@ func getAllCaseStudies() []CaseStudy {
 		var caseStudy CaseStudy
 		if err := cursor.Decode(&caseStudy); err != nil {
 			fmt.Printf("getAllCaseStudies(): %s\n", err)
-			return nil
+			return nil, err
 		}
 		caseStudies = append(caseStudies, caseStudy)
 	}
 	if err := cursor.Err(); err != nil {
 		fmt.Printf("getAllCaseStudies(): %s\n", err)
-		return nil
+		return nil, err
 	}
 
 	fmt.Printf("getAllCaseStudies(): Got case studies\n")
 
-	return caseStudies
+	return caseStudies, err
 }

@@ -13,12 +13,15 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		temp := template.Must(template.ParseFiles("./templates/index.html"))
-		data := getAllCaseStudies()
+		data, err := getAllCaseStudies()
+		if err != nil {
+			fmt.Printf("Error getting case studies")
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
 		temp.Execute(w, data)
 	})
 
 	http.HandleFunc("/case-study/", func(w http.ResponseWriter, r *http.Request) {
-
 		temp := template.Must(template.ParseFiles("./templates/case-study.html"))
 
 		parts := strings.Split(r.URL.Path, "/")
