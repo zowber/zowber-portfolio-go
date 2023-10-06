@@ -11,9 +11,14 @@ import (
 
 func main() {
 
+	dbClient, err := newMongoDBClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		temp := template.Must(template.ParseFiles("./templates/index.html"))
-		data, err := getAllCaseStudies()
+		data, err := dbClient.getAllCaseStudies()
 		if err != nil {
 			fmt.Printf("Error getting case studies")
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -33,7 +38,7 @@ func main() {
 			return
 		}
 
-		data, err := getCaseStudy(caseStudyId)
+		data, err := dbClient.getCaseStudy(caseStudyId)
 		if err != nil {
 			fmt.Printf("Error getting case study")
 			http.Error(w, err.Error(), http.StatusBadRequest)
