@@ -19,15 +19,17 @@ type MongoDBClient struct {
 
 func goDotEnv(key string) string {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading env file!")
+	if os.Getenv(key) == "" {
+		err := godotenv.Load(".env")
+		if err != nil {
+			log.Fatalf("Error loading env file!")
+		}
 	}
 
 	return os.Getenv(key)
 }
 
-func newMongoDBClient() (*MongoDBClient, error) {
+func newPortfolioDbClient() (*MongoDBClient, error) {
 
 	connectionStr := goDotEnv("DB_URI")
 	dbName := "portfolioitems"
