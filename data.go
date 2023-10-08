@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -17,12 +16,12 @@ type MongoDBClient struct {
 	collection *mongo.Collection
 }
 
-func goDotEnv(key string) string {
+func DotEnv(key string) string {
 
 	if os.Getenv(key) == "" {
 		err := godotenv.Load(".env")
 		if err != nil {
-			log.Fatalf("Error loading env file!")
+			log.Fatal("Error loading vars from .env. Exiting.")
 		}
 	}
 
@@ -31,15 +30,22 @@ func goDotEnv(key string) string {
 
 func newPortfolioDbClient() (*MongoDBClient, error) {
 
-	connectionStr := goDotEnv("DB_URI")
+	connectionStr := DotEnv("DB_URI")
 	dbName := "portfolioitems"
 	collectionName := "casestudies"
 
 	ctx := context.Background()
-	opts := options.Client().ApplyURI(connectionStr)
+	logLvl := options.LogLevel(0)
+	loggerOpts := options.Logger().SetComponentLevel(options.LogComponentAll, logLvl)
+	clientOpts := options.
+		Client().
+		ApplyURI(connectionStr).
+		SetLoggerOptions(loggerOpts)
 
-	client, err := mongo.Connect(ctx, opts)
+	client, err := mongo.Connect(ctx, clientOpts)
 	if err != nil {
+		log.Print("Couldn't connect to the DB")
+		// TODO: Recover from this error
 		panic(err)
 	}
 
@@ -52,10 +58,12 @@ func newPortfolioDbClient() (*MongoDBClient, error) {
 func (m *MongoDBClient) getAllCaseStudies() ([]CaseStudy, error) {
 	ctx := context.Background()
 	filter := bson.M{}
+	opts := options.Find()
+	opts.SetSort(bson.M{"id": -1})
 
 	var caseStudies []CaseStudy
 
-	cursor, err := m.collection.Find(ctx, filter)
+	cursor, err := m.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return caseStudies, err
 	}
@@ -77,11 +85,10 @@ func (m *MongoDBClient) getCaseStudy(caseStudyId int) (CaseStudy, error) {
 	err := m.collection.FindOne(ctx, filter).Decode(&caseStudy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			log.Println("No case study found matching filter:", filter)
+			log.Println("No case study found matching filter")
 			return CaseStudy{}, err
 		}
 	}
 
-	fmt.Println("Found a case study with name:", caseStudy.Name)
-	return caseStudy, nil
+	return caseStudy, err
 }
