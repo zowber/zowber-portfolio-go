@@ -2,3 +2,5 @@ tmp/
 vendor/
 .air*
 .env
+server.key
+server.pem
