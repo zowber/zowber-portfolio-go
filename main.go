@@ -8,6 +8,12 @@ import (
 	"text/template"
 )
 
+func notFoundHandler(w http.ResponseWriter, r *http.Request, status int) {
+	w.WriteHeader(http.StatusNotFound)
+	temp := template.Must(template.ParseFiles("./templates/404.html"))
+	temp.Execute(w, r.URL.Path)
+}
+
 func main() {
 
 	db, err := newPortfolioDbClient()
@@ -16,10 +22,15 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			notFoundHandler(w, r, http.StatusNotFound)
+			return
+		}
+
 		temp := template.Must(template.ParseFiles("./templates/index.html"))
 		data, err := db.getAllCaseStudies()
 		if err != nil {
-			log.Print("Error getting case studies from DB")
+			log.Println(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -28,38 +39,34 @@ func main() {
 	})
 
 	http.HandleFunc("/case-study/", func(w http.ResponseWriter, r *http.Request) {
-		temp := template.Must(template.ParseFiles("./templates/case-study.html"))
 
 		parts := strings.Split(r.URL.Path, "/")
+
+		if len(parts) > 3 {
+			notFoundHandler(w, r, http.StatusNotFound)
+			return
+		}
+
 		caseStudyIdStr := parts[2]
 
 		caseStudyId, err := strconv.Atoi(caseStudyIdStr)
 		if err != nil {
-			log.Print("Invalid query param from URL")
+			log.Println(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		data, err := db.getCaseStudy(caseStudyId)
 		if err != nil {
-			log.Print("Error getting case studies from DB")
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Println(err)
+			notFoundHandler(w, r, http.StatusNotFound)
 			return
 		}
 
+		temp := template.Must(template.ParseFiles("./templates/case-study.html"))
 		temp.Execute(w, data)
 	})
 
-	http.HandleFunc("/image", func(w http.ResponseWriter, r *http.Request) {
-		temp := template.Must(template.ParseFiles("./templates/image.html"))
-
-		path := r.URL.Query().Get("path")
-
-		log.Print(path)
-
-		temp.Execute(w, path)
-	})
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServeTLS(":8080", "server.pem", "server.key", nil))
 
 }

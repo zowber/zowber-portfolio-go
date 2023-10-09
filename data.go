@@ -21,7 +21,7 @@ func DotEnv(key string) string {
 	if os.Getenv(key) == "" {
 		err := godotenv.Load(".env")
 		if err != nil {
-			log.Fatal("Error loading vars from .env. Exiting.")
+			log.Fatal(err)
 		}
 	}
 
@@ -35,7 +35,7 @@ func newPortfolioDbClient() (*MongoDBClient, error) {
 	collectionName := "casestudies"
 
 	ctx := context.Background()
-	logLvl := options.LogLevel(0)
+	logLvl := options.LogLevel(5)
 	loggerOpts := options.Logger().SetComponentLevel(options.LogComponentAll, logLvl)
 	clientOpts := options.
 		Client().
@@ -44,7 +44,7 @@ func newPortfolioDbClient() (*MongoDBClient, error) {
 
 	client, err := mongo.Connect(ctx, clientOpts)
 	if err != nil {
-		log.Print("Couldn't connect to the DB")
+		log.Print(err)
 		// TODO: Recover from this error
 		panic(err)
 	}
@@ -52,7 +52,6 @@ func newPortfolioDbClient() (*MongoDBClient, error) {
 	collection := client.Database(dbName).Collection(collectionName)
 
 	return &MongoDBClient{client, collection}, err
-
 }
 
 func (m *MongoDBClient) getAllCaseStudies() ([]CaseStudy, error) {
@@ -65,11 +64,13 @@ func (m *MongoDBClient) getAllCaseStudies() ([]CaseStudy, error) {
 
 	cursor, err := m.collection.Find(ctx, filter, opts)
 	if err != nil {
+		log.Println(err)
 		return caseStudies, err
 	}
 	defer cursor.Close(ctx)
 
 	if err := cursor.All(ctx, &caseStudies); err != nil {
+		log.Println(err)
 		return caseStudies, err
 	}
 
@@ -85,7 +86,7 @@ func (m *MongoDBClient) getCaseStudy(caseStudyId int) (CaseStudy, error) {
 	err := m.collection.FindOne(ctx, filter).Decode(&caseStudy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			log.Println("No case study found matching filter")
+			log.Println(err)
 			return CaseStudy{}, err
 		}
 	}
