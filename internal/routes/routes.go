@@ -16,7 +16,7 @@ func NewRouter() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", rootHandler)
-	mux.HandleFunc("/case-study", rootHandler)
+	mux.HandleFunc("/case-study/", caseStudyHandler)
 
 	return mux
 }
