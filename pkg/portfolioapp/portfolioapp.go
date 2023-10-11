@@ -1,4 +1,4 @@
-package main
+package portfolioapp
 
 type Image struct {
 	Url     string  `json:"url"`

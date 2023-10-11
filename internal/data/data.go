@@ -1,4 +1,4 @@
-package main
+package data
 
 import (
 	"context"
@@ -6,29 +6,28 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/zowber/zowber-portfolio-go/pkg/portfolioapp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type MongoDBClient struct {
-	client     *mongo.Client
-	collection *mongo.Collection
-}
-
 func DotEnv(key string) string {
-
 	if os.Getenv(key) == "" {
 		err := godotenv.Load(".env")
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-
 	return os.Getenv(key)
 }
 
-func newPortfolioDbClient() (*MongoDBClient, error) {
+type MongoDBClient struct {
+	client     *mongo.Client
+	collection *mongo.Collection
+}
+
+func NewPortfolioDbClient() (*MongoDBClient, error) {
 
 	connectionStr := DotEnv("DB_URI")
 	dbName := "portfolioitems"
@@ -54,13 +53,13 @@ func newPortfolioDbClient() (*MongoDBClient, error) {
 	return &MongoDBClient{client, collection}, err
 }
 
-func (m *MongoDBClient) getAllCaseStudies() ([]CaseStudy, error) {
+func (m *MongoDBClient) GetAllCaseStudies() ([]*portfolioapp.CaseStudy, error) {
 	ctx := context.Background()
 	filter := bson.M{}
 	opts := options.Find()
 	opts.SetSort(bson.M{"id": -1})
 
-	var caseStudies []CaseStudy
+	var caseStudies []*portfolioapp.CaseStudy
 
 	cursor, err := m.collection.Find(ctx, filter, opts)
 	if err != nil {
@@ -77,17 +76,17 @@ func (m *MongoDBClient) getAllCaseStudies() ([]CaseStudy, error) {
 	return caseStudies, err
 }
 
-func (m *MongoDBClient) getCaseStudy(caseStudyId int) (CaseStudy, error) {
+func (m *MongoDBClient) GetCaseStudy(caseStudyId int) (*portfolioapp.CaseStudy, error) {
 	ctx := context.Background()
 	filter := bson.M{"id": caseStudyId}
 
-	var caseStudy CaseStudy
+	var caseStudy *portfolioapp.CaseStudy
 
 	err := m.collection.FindOne(ctx, filter).Decode(&caseStudy)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			log.Println(err)
-			return CaseStudy{}, err
+			return &portfolioapp.CaseStudy{}, err
 		}
 	}
 
