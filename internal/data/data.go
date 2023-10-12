@@ -3,24 +3,13 @@ package data
 import (
 	"context"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/zowber/zowber-portfolio-go/internal/conf"
 	"github.com/zowber/zowber-portfolio-go/pkg/portfolioapp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-func DotEnv(key string) string {
-	if os.Getenv(key) == "" {
-		err := godotenv.Load(".env")
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	return os.Getenv(key)
-}
 
 type MongoDBClient struct {
 	client     *mongo.Client
@@ -29,7 +18,7 @@ type MongoDBClient struct {
 
 func NewPortfolioDbClient() (*MongoDBClient, error) {
 
-	connectionStr := DotEnv("DB_URI")
+	connectionStr := conf.DotEnv("DB_URI")
 	dbName := "portfolioitems"
 	collectionName := "casestudies"
 
