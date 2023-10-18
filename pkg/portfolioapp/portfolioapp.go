@@ -1,5 +1,7 @@
 package portfolioapp
 
+import "html/template"
+
 type Image struct {
 	Url     string  `json:"url"`
 	Layout  *string `json:"layout"`
@@ -7,10 +9,10 @@ type Image struct {
 }
 
 type SubSection struct {
-	Type    string   `json:"type"`
-	Heading string   `json:"heading"`
-	Content string   `json:"content"`
-	Images  *[]Image `json:"images"`
+	Type    string        `json:"type"`
+	Heading string        `json:"heading"`
+	Content template.HTML `json:"content"`
+	Images  *[]Image      `json:"images"`
 }
 
 type Section struct {
@@ -30,12 +32,13 @@ type Meta struct {
 }
 
 type CaseStudy struct {
-	Id          int       `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Lead        string    `json:"lead"`
-	HeroImgUrl  string    `json:"heroImgUrl"`
-	Labels      []string  `json:"labels"`
-	Meta        Meta      `json:"meta"`
-	Sections    []Section `json:"sections"`
+	Id            int       `json:"id"`
+	Name          string    `json:"name"`
+	Description   string    `json:"description"`
+	Lead          string    `json:"lead"`
+	HeroImgUrl    string    `json:"heroImgUrl"`
+	HeroImgRawUrl string    `json:"heroImgRawUrl"`
+	Labels        []string  `json:"labels"`
+	Meta          Meta      `json:"meta"`
+	Sections      []Section `json:"sections"`
 }

@@ -49,7 +49,7 @@
               <div class="pb-5">{{ .Lead }}</div>
             </div>
             <div class="col-5 offset-1">
-              <img src="{{ .HeroImgUrl }}" altitem.name class="img-fluid" />
+              <img src="{{ .HeroImgRawUrl }}" class="img-fluid" />
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="container">
           <div class="row pt-3 pb-1">
             <div class="col text-center">
-              <h6 class="fst-italic">Company</h6>
+              <h6 class="fst-italic">Client/Company</h6>
               <p>{{ .Meta.Client }}</p>
             </div>
             <div class="col text-center">
@@ -82,46 +82,47 @@
 
       <div class="container mt-5">
         <div class="mt-5">
+          {{ if ne .Heading nil }}
           <div class="row">
-            <div class="col-12 col-sm-8 offset-sm-2">
+            <div class="col-12 col-lg-8 offset-lg-2">
               <h2>{{ .Heading }}</h2>
             </div>
           </div>
+          {{ end }}
           {{ range .SubSections }} {{ if eq .Type "textOnly" }}
           <div class="textOnly mt-3">
             <div class="row">
-              <div class="col-12 col-sm-8 offset-sm-2">
+              <div class="col-12 col-lg-8 offset-lg-2">
                 <h3>{{ .Heading }}</h3>
               </div>
-              <div class="col-12 col-sm-8 offset-sm-2 mt-2">{{ .Content }}</div>
+              <div class="col-12 col-lg-8 offset-lg-2 mt-2">{{ .Content }}</div>
             </div>
           </div>
           {{ end }} {{ if eq .Type "imagesAndText" }}
-
           <div class="imagesAndText mt-3">
             <div class="row">
-              <div class="col-12 col-sm-8 offset-sm-2">
+              <div class="col-12 col-lg-8 offset-lg-2">
                 <h3>{{ .Heading }}</h3>
               </div>
             </div>
 
             {{ range .Images }}
             <div class="row">
-              <div class="col-12 col-sm-8 offset-sm-2 mt-4 mb-3">
+              <div class="col-12 col-lg-8 offset-lg-2 mt-4 mb-3">
                 <figure class="figure">
                   <img
                     class="figure-img img-fluid border border-secondary-subtle rounded-1"
                     alt=""
                     src="{{ .Url }}"
                   />
-                  <figcaption class="figure-caption">{{ .Caption }}</figcaption>
+                  {{ if .Caption }}<figcaption class="figure-caption">{{ .Caption }}</figcaption>{{ end }}
                 </figure>
               </div>
             </div>
             {{ end }}
 
             <div class="row">
-              <div class="col-12 col-sm-8 offset-sm-2">
+              <div class="col-12 col-lg-8 offset-lg-2">
                 <div>{{ .Content }}</div>
               </div>
             </div>
@@ -132,7 +133,7 @@
             <div class="row imageGrid mt-4 mb-3">
               <div class="col-12">
                 <div class="row">
-                  <div class="col-12 col-sm-8 offset-sm-2">
+                  <div class="col-12 col-lg-8 offset-lg-2">
                     <h2>{{ .Heading }}</h2>
 
                     <div>{{ .Content }}</div>
@@ -142,7 +143,7 @@
 
               <div class="col-12">
                 <div class="row">
-                  <div class="col-12 col-sm-8 offset-sm-2">
+                  <div class="col-12 col-lg-8 offset-lg-2">
                     {{ range .Images }}
                     <img
                       alt=""
@@ -170,10 +171,10 @@
           <div class="col-6 col-sm-4 offset-sm-2">
             <div class="card mb-3">
               <div class="row g-0">
-                <div class="col-md-4">
+                <div class="col-lg-4">
                   <img src="" class="img-fluid rounded-start" alt="..." />
                 </div>
-                <div class="col-md-8">
+                <div class="col-lg-8">
                   <div class="card-body">
                     <h5 class="card-title">
                       <a href=""> name </a>
@@ -187,10 +188,10 @@
           <div class="col-4">
             <div class="card mb-3">
               <div class="row g-0">
-                <div class="col-md-4">
+                <div class="col-lg-4">
                   <img src="" class="img-fluid rounded-start" alt="..." />
                 </div>
-                <div class="col-md-8">
+                <div class="col-lg-8">
                   <div class="card-body">
                     <h5 class="card-title">
                       <a href=""> name </a>
