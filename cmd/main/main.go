@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zowber/zowber-portfolio-go/internal/conf"
-	"github.com/zowber/zowber-portfolio-go/internal/routes"
+	"zowber-portfolio-go/internal/conf"
+	"zowber-portfolio-go/internal/routes"
 )
 
 func main() {

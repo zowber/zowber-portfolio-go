@@ -4,8 +4,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/zowber/zowber-portfolio-go/internal/conf"
-	"github.com/zowber/zowber-portfolio-go/pkg/portfolioapp"
+	"zowber-portfolio-go/internal/conf"
+	"zowber-portfolio-go/pkg/portfolioapp"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

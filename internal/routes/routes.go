@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zowber/zowber-portfolio-go/internal/data"
+	"zowber-portfolio-go/internal/data"
 )
 
 var db, _ = data.NewPortfolioDbClient()
