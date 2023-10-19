@@ -1,13 +1,14 @@
-FROM golang:1.16-alpine
+FROM golang:1.21-alpine
 
 WORKDIR /app
 
-COPY . .
+COPY .go.mod . 
+COPY cmd/ .
+COPY internal/ .
+COPY templates/ .
 
 RUN go mod download
 
 RUN go build -o bin/main ./cmd/main/main.go
 
-EXPOSE 8080
-
-CMD ["./bin/main"]
+ENTRYPOINT ["./bin/main"]
