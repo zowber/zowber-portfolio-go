@@ -2,7 +2,7 @@ FROM golang:1.21-alpine
 
 WORKDIR /app
 
-COPY .go.mod . 
+COPY go.mod . 
 COPY cmd/ .
 COPY internal/ .
 COPY templates/ .
