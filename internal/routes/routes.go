@@ -29,6 +29,7 @@ var errorHandler = func(w http.ResponseWriter, r *http.Request, status int) {
 
 var rootHandler = func(w http.ResponseWriter, r *http.Request) {
 
+	log.Println("Req:", r.URL.Path)
 	// 404 on anything but root
 	if r.URL.Path != "/" {
 		errorHandler(w, r, http.StatusNotFound)
@@ -48,6 +49,7 @@ var rootHandler = func(w http.ResponseWriter, r *http.Request) {
 
 var caseStudyHandler = func(w http.ResponseWriter, r *http.Request) {
 
+	log.Println("Req:", r.URL.Path)
 	parts := strings.Split(r.URL.Path, "/")
 
 	if len(parts) > 3 {
