@@ -10,7 +10,7 @@ import (
 	"github.com/zowber/zowber-portfolio-go/internal/data"
 )
 
-var db, err = data.NewPortfolioDbClient()
+var db, _ = data.NewPortfolioDbClient()
 
 func NewRouter() http.Handler {
 	mux := http.NewServeMux()
