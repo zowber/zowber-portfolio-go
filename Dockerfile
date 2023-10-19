@@ -1,14 +1,15 @@
 FROM golang:1.21-alpine
 
-WORKDIR /app
+WORKDIR /usr/local/go/src/zowber-portfolio-go
 
-COPY go.mod . 
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
 COPY cmd/ cmd/
-COPY internal/ cmd/
+COPY internal/ internal/
 COPY pkg/ pkg/
 COPY templates/ templates/
-
-RUN go mod download
 
 RUN go build -o bin/main ./cmd/main/main.go
 
