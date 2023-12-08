@@ -29,7 +29,7 @@ var errorHandler = func(w http.ResponseWriter, r *http.Request, status int) {
 
 var rootHandler = func(w http.ResponseWriter, r *http.Request) {
 
-	log.Println("Req:", r.URL.Path)
+	log.Println("Req:", r.URL.Path, r.UserAgent())
 	// 404 on anything but root
 	if r.URL.Path != "/" {
 		errorHandler(w, r, http.StatusNotFound)
@@ -57,9 +57,7 @@ var caseStudyHandler = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	caseStudyIdStr := parts[2]
-
-	caseStudyId, err := strconv.Atoi(caseStudyIdStr)
+    caseStudyId, err := strconv.Atoi(parts[2])
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
